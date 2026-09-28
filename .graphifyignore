@@ -1,0 +1,13 @@
+# Arvore unica de skills: o Claude Code carrega .claude/skills/.
+# Copias divergentes ressuscitam regra defasada — nao indexar.
+.agents/
+.codex/
+
+# Skills vendorizadas arquivadas na tarefa 4 (dormentes, fora da esteira).
+docs/skills-arquivadas/
+
+
+# Evidencias e tmp
+docs/evidencias/
+scripts/tmp/
+tarefas/*/scripts/

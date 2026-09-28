@@ -1,0 +1,23 @@
+{
+  "_comentario": "Arquivo de referência. Molde para fixtures data-driven: cada caso traz id, descricao (entra no nome do teste), valor e mensagemEsperada (texto literal vindo do código).",
+  "cnpjInvalidos": [
+    {
+      "id": "curto",
+      "descricao": "com menos de 14 dígitos",
+      "valor": "1122233300",
+      "mensagemEsperada": "CNPJ inválido"
+    },
+    {
+      "id": "digito-verificador",
+      "descricao": "com dígito verificador errado",
+      "valor": "11222333000199",
+      "mensagemEsperada": "CNPJ inválido"
+    },
+    {
+      "id": "repetido",
+      "descricao": "com todos os dígitos iguais",
+      "valor": "11111111111111",
+      "mensagemEsperada": "CNPJ inválido"
+    }
+  ]
+}

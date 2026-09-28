@@ -1,0 +1,31 @@
+{
+  "name": "qa-agent",
+  "version": "3.0.0",
+  "private": true,
+  "description": "Automação de QA guiada por tarefa do ClickUp — multi-cliente, Playwright + Claude Code",
+  "scripts": {
+    "test": "cross-env AMBIENTE=hmlg playwright test",
+    "test:local": "cross-env AMBIENTE=local playwright test",
+    "test:headed": "cross-env AMBIENTE=hmlg playwright test --headed",
+    "acompanhar": "cross-env AMBIENTE=hmlg ACOMPANHAR=1 playwright test",
+    "acompanhar:local": "cross-env AMBIENTE=local ACOMPANHAR=1 playwright test",
+    "test:local:headed": "cross-env AMBIENTE=local playwright test --headed",
+    "test:debug": "cross-env AMBIENTE=local playwright test --debug",
+    "test:ui": "cross-env AMBIENTE=hmlg playwright test --ui",
+    "auth": "playwright test --project=setup",
+    "list": "playwright test --list",
+    "test:unit": "tsx --test \"support/__testes__/*.test.ts\"",
+    "doctor": "tsx scripts/doctor.ts",
+    "report": "playwright show-report .playwright-report",
+    "typecheck": "tsc --noEmit",
+    "postinstall": "playwright install chromium"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "@types/node": "^22.10.0",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.4.7",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}

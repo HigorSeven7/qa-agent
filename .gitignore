@@ -1,0 +1,123 @@
+node_modules/
+
+# Segredos
+# `.env*` pega qualquer variante (.env.hmlg, .env.backup, .env.old). Listar
+# nome por nome deixava passar a proxima que alguem criasse.
+.env*
+!.env.example
+.claude/settings.local.json
+
+# Catálogo de ambientes: contém hosts e IPs internos dos clientes.
+# Versione só o exemplo; o real fica local. Copie de config/clientes.example.json.
+config/clientes.json
+
+# O MD de ambientes NUNCA mora no projeto (senhas em texto claro)
+*ambientes*.md
+!repos/LEIA-ME.md
+
+# Sessões autenticadas (contêm token de sessão — nunca versionar)
+support/.auth/
+
+# Clones dos sistemas, caso alguém insista em colocar algo aqui
+repos/*
+!repos/.gitkeep
+!repos/LEIA-ME.md
+
+# Artefatos de execução
+.playwright-artifacts/
+.playwright-report/
+test-results/
+
+# Evidências do gerador /evidencia
+docs/evidencias/
+
+# Contexto e evidência por tarefa — estado de trabalho, contém dado de cliente
+.contexto/*
+!.contexto/.gitkeep
+evidencias/*
+!evidencias/.gitkeep
+/.scratch
+*.html
+*.pdf
+*.png
+*.jpg
+*.jpeg
+*.txt
+
+.DS_Store
+Thumbs.db
+
+# Sondagens de exploracao (temporario, por tarefa)
+.exploracao/
+
+# Cache local do agente (hierarquia do ClickUp, etc.)
+.cache/
+
+# Sala de espera do que vai ser apagado. O conteudo vem de pastas que ja eram
+# gitignored (sondagens, rascunhos, prints de tela de cliente) — versionar aqui
+# seria vazar pela porta dos fundos justamente o que a regra de tarefas/ fecha.
+_to_delete/
+
+# ─── Uma pasta por tarefa ────────────────────────────────────────────────
+# Nega por padrão: só spec, fixture, page object da tarefa e alvo.json entram no git.
+# Tudo o mais dentro de tarefas/<ID>/ contém dado de cliente — print de tela,
+# contexto do card, resultado de execução, PDF de evidência — e fica de fora,
+# INCLUSIVE pasta nova que alguém criar depois. Listar o que excluir daria
+# certo hoje e vazaria print de cliente no primeiro diretório novo.
+# `npm run doctor` prova mecanicamente que a regra está valendo.
+tarefas/*/*
+!tarefas/*/specs/
+!tarefas/*/fixtures/
+!tarefas/*/alvo.json
+
+# Page object de uma tarefa só: entra só o `*.page.ts`. Print ou JSON salvo por
+# engano na pasta continua negado.
+!tarefas/*/pages/
+tarefas/*/pages/*
+!tarefas/*/pages/*.page.ts
+
+# Scripts da tarefa (sonda, repro, gerador/limpador de massa) ficam FORA: têm
+# credencial de ambiente e dado real de cliente.
+
+# Rascunho do agente durante a rodada de QA: sondas de endpoint, scripts de
+# repro, gerador/limpador de massa e o JSON que eles cospem. Contem credencial
+# de ambiente e dado real de cliente (CNPJ, contrato, ID) — mesmo motivo pelo
+# qual tarefas/<ID>/ e negado. Fica no disco, nunca no git. O lugar certo é
+# tarefas/<ID>/scripts/; estas duas linhas seguem como rede de proteção.
+scripts/tmp/
+scripts/tmp-*.ts
+
+# ─── Anexo de evidencia gerado no teste ──────────────────────────────────
+# Planilha, zip e doc saem da execucao com dado real de cliente — o anexo do
+# ClickUp e "PDF + resultado.json + zip das imagens", e evidencias/arquivos/
+# guarda xlsx. Dentro de tarefas/ a regra acima ja pegava; isto fecha o resto
+# do projeto. Fixture legitima em planilha entra com `git add -f`.
+*.xlsx
+*.xls
+*.csv
+*.zip
+*.docx
+
+# ─── Gravacao e trace do Playwright ──────────────────────────────────────
+# O config usa video/trace 'retain-on-failure'. Hoje caem em
+# .playwright-artifacts/, mas quem mudar o outputDir publica gravacao de tela
+# de cliente. HAR e o pior: guarda request e response inteiros, com token.
+*.webm
+*.mp4
+*.har
+
+# ─── Maquina local e artefato de build ───────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*~
+*.log
+npm-debug.log*
+yarn-error.log*
+*.tsbuildinfo
+blob-report/
+playwright/.cache/
+coverage/
+
+# Graphify - grafo de conhecimento (artefato gerado)
+graphify-out/

@@ -1,0 +1,104 @@
+{
+  "_leia": "EXEMPLO. Copie para config/clientes.json e ajuste. 'produto' escolhe o login em support/logins/. SEM SEGREDOS AQUI — senhas ficam no .env.",
+  "clientePadrao": "cliente-exemplo",
+  "sistemaPadrao": "crm",
+  "clickup": {
+    "listaDevs": "",
+    "listaQA": "",
+    "prefixoTarefaQA": "QA0",
+    "colunaGatilhoDev": "EM TESTE (QA)",
+    "colunaAprovadoDev": "EM VALIDAÇÃO (PO/CLIE)",
+    "colunaReprovadoDev": "PRIORIZADO",
+    "colunasQA": {
+      "testando": "TESTANDO",
+      "aprovado": "APROVADO",
+      "reprovado": "REPROVADO",
+      "bloqueado": "BLOQUEADO",
+      "liberadaSemTeste": "LIBERADA SEM TESTE"
+    }
+  },
+  "clientes": {
+    "cliente-exemplo": {
+      "nome": "Cliente Exemplo",
+      "clickup": {
+        "aliases": [
+          "exemplo",
+          "CEX"
+        ]
+      },
+      "sistemas": {
+        "crm": {
+          "nome": "Cliente Exemplo CRM",
+          "ambientes": {
+            "hmlg": {
+              "baseURL": "https://crm-exemplo-hmlg.azurewebsites.net",
+              "apiURL": "https://api-exemplo-hmlg.azurewebsites.net"
+            },
+            "local": {
+              "baseURL": "http://localhost:8080",
+              "apiURL": "http://localhost:5000"
+            }
+          },
+          "perfis": [
+            "admin",
+            "operador"
+          ],
+          "rotaLogin": "/login",
+          "repos": {
+            "front": "C:/dev/exemplo/exemplo-web",
+            "back": "C:/dev/exemplo/exemplo-api"
+          },
+          "branchBase": "develop",
+          "db": {
+            "server": "exemplo-hmlg.database.windows.net",
+            "database": "EXEMPLO_HMLG"
+          }
+        },
+        "b2b": {
+          "nome": "Cliente Exemplo B2B",
+          "ambientes": {
+            "hmlg": {
+              "baseURL": "https://b2b-exemplo-hmlg.azurewebsites.net"
+            }
+          },
+          "perfis": [
+            "admin"
+          ],
+          "rotaLogin": "/login",
+          "repos": {
+            "front": "C:/dev/exemplo/exemplo-b2b"
+          },
+          "branchBase": "develop"
+        }
+      }
+    },
+    "cliente-interno": {
+      "nome": "Cliente Interno",
+      "clickup": {
+        "aliases": [
+          "interno"
+        ]
+      },
+      "sistemas": {
+        "crm": {
+          "nome": "Cliente Interno CRM",
+          "ambientes": {
+            "hmlg": {
+              "baseURL": "http://10.0.0.20:8088"
+            }
+          },
+          "perfis": [
+            "admin"
+          ],
+          "rotaLogin": "/login",
+          "repos": {},
+          "branchBase": "develop",
+          "requerVpn": true,
+          "avisos": [
+            "URL interna — exige VPN / rede da empresa"
+          ]
+        }
+      }
+    }
+  }
+}
