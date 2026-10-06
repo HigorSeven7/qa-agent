@@ -169,7 +169,7 @@ scripts/doctor.ts       npm run doctor
 .claude/
 ├── commands/           /testar-tarefa · /analisar-tarefa · /reteste · /evidencia
 ├── agents/             qa-analista · qa-codigo · qa-explorador · qa-implementador ·
-│                       qa-executor · qa-revisor
+│                       qa-executor · qa-revisor · qa-publicador
 ├── skills/             locais:       clickup-qa-workflow · analise-branch ·
 │                                     playwright-padrao · captura-evidencia
 │                       vendorizadas: test-data-management · selector-drift-recovery ·
@@ -192,7 +192,7 @@ algo fora disso aparecer versionado.
 
 ---
 
-## Os seis subagentes
+## Os sete subagentes
 
 | Agente | Entrada | Saída |
 |---|---|---|
@@ -202,6 +202,7 @@ algo fora disso aparecer versionado.
 | `qa-implementador` | plano + mapa | spec + Page Object |
 | `qa-executor` | specs | `05-execucao.md` + tabela CT → classificação |
 | `qa-revisor` | tudo | veredito (caça falso verde e falso vermelho) |
+| `qa-publicador` | `rascunho-veredito.md` + `resultado.json` | PDF, anexo na tarefa de QA e comentário nas duas tarefas (não decide veredito) |
 
 ---
 

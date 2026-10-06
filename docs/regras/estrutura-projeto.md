@@ -36,7 +36,7 @@ qa-agent/
 ├── .claude/
 │   ├── commands/              ← /testar-tarefa, /analisar-tarefa, /reteste, /evidencia
 │   ├── agents/                ← qa-analista, qa-codigo, qa-explorador, qa-implementador,
-│   │                            qa-executor, qa-revisor — fonte única; o Codex recebe cópia
+│   │                            qa-executor, qa-revisor, qa-publicador — fonte única; o Codex recebe cópia
 │   │                            em .codex/agents/*.toml via scripts/sincronizar-codex.ts
 │   ├── skills/                ← ÁRVORE ÚNICA: 4 locais + 4 vendorizadas (ver docs/regras/skills.md)
 │   │                            Codex lê daqui também — não existe cópia em .codex/

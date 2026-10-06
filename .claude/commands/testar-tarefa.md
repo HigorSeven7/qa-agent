@@ -456,93 +456,28 @@ revisão de novo. Se for `confiável-com-ressalvas`, inclua as ressalvas no come
 
 ---
 
-## Etapa 9 — Gerar evidência final
+## Etapa 9 — Rascunho do veredito (você decide)
 
-Rode o comando **`/evidencia`** — ele é o gerador oficial do PDF no padrão do projeto
-(capa, layout, conversão via Edge headless) e está em `.claude/commands/evidencia.md`.
-
-Alimente com o que a execução produziu:
-
-- `--cliente` = campo `cliente` de `tarefas/<TAREFA>/evidencias/resultado.json`
-- `--projeto` = campo `sistema` do mesmo arquivo (ex.: "Acme CRM")
-- `--imagens` = todos os `.png` de `tarefas/<TAREFA>/evidencias/`, em ordem alfabética
-- corpo da evidência = cenários e status de `resultado.json` + o plano `04-plano.md`
-
-Se `resultado.json` tiver `"evidenciaOficial": false`, a execução foi em localhost —
-diga isso em destaque no corpo do documento.
-
-**Nunca monte o PDF ou o HTML à mão.** Se o `/evidencia` falhar (Python ou Edge ausentes),
-resolva o ambiente e rode de novo — não improvise um documento fora do padrão.
-
-Dentro da esteira, o `/evidencia` serve **só para gerar o arquivo**: pule o passo 6 dele
-("Anexar no ClickUp — perguntar antes"). O anexo e os comentários são a etapa 10 daqui, e
-não param para perguntar.
-
----
-
-## Etapa 10 — Publicar no ClickUp (só anexo e comentário)
-
-Invoque a skill **`clickup-qa-workflow`** — ela tem os formatos de comentário e as regras de
-anexo. São **dois passos, e só eles**:
-
-### 10.1 — Anexar a evidência na tarefa de QA da rodada atual (`QA0N-`)
-
-`clickup_attach_task_file` → o PDF de evidência, o `resultado.json` e, se as imagens forem
-muitas, o `.zip` delas. **Só na tarefa de QA** — nunca na do dev.
-
-### 10.2 — Comentar nas DUAS tarefas
-
-`clickup_create_comment` na tarefa de QA (versão completa) **e** na tarefa do dev (versão
-curta). O comentário na tarefa do dev é **sempre**, aprovado ou não — não é mais condicional.
-
-**Comentário na tarefa de QA** — formato completo:
+Grave `tarefas/<TAREFA>/contexto/rascunho-veredito.md`. É a **única** fonte do `qa-publicador`:
+o que não estiver aqui não sai no PDF nem no comentário. Seções, nesta ordem:
 
 ```
-🤖 Teste automatizado — <TAREFA>
-
-Cliente / Sistema: <nome> / <sistema>
-Ambiente: <hmlg|local>  ·  URL: <baseURL>
-Branch analisada: <branch>  ·  Commit: <sha curto>
-
-Cenários: <N> executados — ✅ <n> aprovados · ❌ <n> reprovados · ⛔ <n> bloqueados
-
-| CT   | Cenário | Tipo | CA | Resultado |
-|------|---------|------|----|-----------|
-| CT01 | ...     | obrigatório | CA01 | ✅ |
-| CX01 | ...     | complementar | — | ✅ |
-
-Cobertura dos critérios de aceite: <n>/<n> CAs com cenário.
-
-Achados:
-- ...
-
-Observações de testabilidade:
-- ...
-
-Preparo do ambiente (o que ficou em hmlg):
-- Acessos concedidos a <usuário> na filial <FILIAL-DE-CONCESSÃO>: <lista>  (não revertidos)
-- Massa criada: <N> registros, prefixo QA-<TAREFA>-<runId>
-- Registros alterados e restaurados: <lista>   (ou "nenhum")
-
-Specs: tarefas/<TAREFA>/specs/<modulo>.spec.ts
-
+## Veredito
 Veredito sugerido: <APROVADO|REPROVADO|BLOQUEADO|LIBERADA SEM TESTE> — <justificativa em 1 linha>
-Ação sua (humano): <a movimentação de coluna que o veredito pede — ver tabela abaixo>
+
+## Ação do humano
+<movimentação de coluna que o veredito pede; se REPROVADO: título QA0<N+1>-, lista, CTs a reconferir>
+
+## Achados
+- <CT0N — o que falhou, passos, esperado vs obtido, reproduzido manualmente: sim/não>  (ou "nenhum")
+
+## Observações de testabilidade
+## Preparo do ambiente
+## Ressalvas do revisor
+## CA inferidos do diff (em destaque)
 ```
 
-**Comentário na tarefa do dev** — versão curta, sempre:
-
-```
-🤖 Teste automatizado — <TAREFA> (rodada QA0N)
-
-Cenários: <N> executados — ✅ <n> · ❌ <n> · ⛔ <n>
-Veredito sugerido: <APROVADO|REPROVADO|BLOQUEADO|LIBERADA SEM TESTE>
-
-Achados:
-- <CT0N — o que falhou, passos de reprodução, esperado vs obtido>   (ou "nenhum")
-
-Evidência completa (PDF + resultado.json) anexada na tarefa de QA: <link da QA0N->
-```
+A linha `Veredito sugerido:` é obrigatória e exata: o `verificar-esteira.ts` lê o veredito por ela.
 
 ### Qual veredito declarar
 
@@ -568,6 +503,24 @@ precisa para abrir a próxima rodada na mão, sem reabrir a evidência:
 
 A rodada reprovada **fica** em `REPROVADO` — ela é o histórico. O reteste acontece na tarefa
 nova, criada pelo humano.
+
+---
+
+## Etapa 10 — Gerar evidência e publicar (subagente)
+
+Delegue ao subagente **`qa-publicador`** (modelo `haiku`). Passe: `<TAREFA>`, ID da tarefa do
+dev, ID da tarefa de QA da rodada atual (`QA0N-`) e o nível do PDF (`resumida`, padrão, ou
+`tecnica`).
+
+Ele gera o PDF pelo `gerar-evidencia.py`, anexa PDF + `resultado.json` na tarefa de QA e comenta
+nas duas tarefas — sem perguntar. Ele **não** decide nem muda o veredito: só publica o rascunho.
+
+Confira o retorno dele:
+
+- Algum item `falhou` → corrija a causa e chame de novo **só** para o que falhou (não comente
+  duas vezes na mesma tarefa).
+- `faltou: rascunho-veredito.md` → volte à etapa 9.
+- `Veredito publicado` diferente do rascunho → pare e me avise.
 
 ---
 
@@ -614,7 +567,7 @@ de outra execução e o `## Resumo` de cada arquivo de contexto.
       `LIBERADA SEM TESTE`), sem o sufixo "com ressalva"
 - [ ] (manual) Os complementares implementados são exatamente os que eu aprovei na etapa 6
 - [ ] (manual) A URL testada é a do ambiente daquele par cliente+sistema em `config/clientes.json`
-- [ ] (manual) O PDF de evidência foi gerado pelo `/evidencia` (não montado à mão)
+- [ ] (manual) O PDF de evidência foi gerado pelo `gerar-evidencia.py`, via `qa-publicador` (não montado à mão)
 - [ ] (manual) Todos os comentários e anexos da tarefa foram lidos (não só a descrição)
 - [ ] (script: não vazio, com comando e ref · manual: comando bate com a branch) O diff da branch foi analisado e o resumo está em `02-codigo.md` — **não veio vazio**, e
       o comando usado bate com o estado da branch (mergeada → merge commit; aberta → three-dot)
